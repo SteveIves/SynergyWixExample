@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+    <ComponentGroup Id="RegistryEntries">
+      <Component Id="Registry_Author" Directory="INSTALLFOLDER" Guid="{B6E2D167-1CBB-46EA-BB75-84B1F65EA132}">
+        <RegistryKey Root="HKLM" Key="Software\!(bind.property.Manufacturer)\!(bind.property.ProductName)">
+          <RegistryValue Type="string" Name="Name" Value="[USERNAME]" KeyPath="yes"/>
+        </RegistryKey>
+      </Component>
+      <Component Id="Registry_Company" Directory="INSTALLFOLDER" Guid="{B1C74D08-E51C-4B03-888B-250F0E9010D1}">
+        <RegistryKey Root="HKLM" Key="Software\!(bind.property.Manufacturer)\!(bind.property.ProductName)">
+          <RegistryValue Type="string" Name="Company" Value="[COMPANYNAME]" KeyPath="yes"/>
+        </RegistryKey>
+      </Component>
+      <Component Id="Registry_InstallPath" Directory="INSTALLFOLDER" Guid="{45850761-D70E-4692-B744-FA816D1F743B}">
+        <RegistryKey Root="HKLM" Key="Software\!(bind.property.Manufacturer)\!(bind.property.ProductName)">
+          <RegistryValue Type="string" Name="InstallPath" Value="[INSTALLFOLDER]" KeyPath="yes"/>
+        </RegistryKey>
+      </Component>
+      <Component Id="Registry_Version" Directory="INSTALLFOLDER" Guid="{6CE78E17-913A-45B9-AA17-B351D894BC3C}">
+        <RegistryKey Root="HKLM" Key="Software\!(bind.property.Manufacturer)\!(bind.property.ProductName)">
+          <RegistryValue Type="string" Name="Version" Value="[ProductVersion]" KeyPath="yes"/>
+        </RegistryKey>
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

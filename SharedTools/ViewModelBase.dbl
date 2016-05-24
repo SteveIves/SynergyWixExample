@@ -1,0 +1,128 @@
+import System
+import System.ComponentModel
+import System.Diagnostics
+
+namespace SharedTools
+	
+	public abstract class ViewModelBase implements INotifyPropertyChanged, IDisposable
+		
+		.region "DisplayName"
+		
+		;;;<summary>
+		;;;Returns the user-friendly name of this object.
+		;;;Child classes can set this property to a new value,
+		;;;or override it to determine the value on-demand.
+		;;;</summary>
+		private mDisplayName, string
+		public virtual property DisplayName, string
+			method get
+			proc
+				mreturn mDisplayName
+			endmethod
+			protected method set
+			proc
+				mDisplayName = value
+			endmethod
+		endproperty
+		
+		.endregion ;;DisplayName
+
+		.region "INotifyPropertyChanged"
+		
+		;;;<summary>
+		;;;Raised when a property on this object has a new value.
+		;;;</summary>
+		public event PropertyChanged, @PropertyChangedEventHandler
+		
+		;;;<summary>
+		;;;Raises this object's PropertyChanged event.
+		;;;</summary>
+		;;;<param name="propertyName">The property that has a new value.</param>
+		protected virtual method NotifyPropertyChanged, void
+			required in propertyName, @string 
+			endparams
+		proc
+			;;Raising propertychanged on a null property name will
+			;;raise the event for all properties. This is useful when
+			;;a VM exposes individual properties from a single object
+			;;or struct backing field, becaus if the backing field changes
+			;;then potentially all of the exposed properties change also.
+				
+			if (propertyName!=^null)
+				this.VerifyPropertyName(propertyName)
+				
+			if (PropertyChanged != ^null)
+				PropertyChanged(this, new PropertyChangedEventArgs(propertyName))
+		
+		endmethod
+		
+		.endregion
+		
+		.region "IDisposable Members"
+		
+		;;;<summary>
+		;;;Invoked when this object is being removed from the application
+		;;;and will be subject to garbage collection.
+		;;;</summary>
+		public method Dispose, void
+			endparams
+		proc
+			this.OnDispose()
+		endmethod
+		
+		;;;<summary>
+		;;;Child classes can override this method to perform 
+		;;;clean-up logic, such as removing event handlers.
+		;;;</summary>
+		protected virtual method OnDispose, void
+			endparams
+		proc
+			
+		endmethod
+		
+		.endregion ;;IDisposable Members
+		
+		.region "Debugging Aides"
+		
+		{Conditional("DEBUG")}
+		{DebuggerStepThrough}
+		public method VerifyPropertyName, void
+			required in propertyName, @string 
+			endparams
+		proc
+			;;  Verify that the property name matches a real public instance property on this object.
+			if (TypeDescriptor.GetProperties(this)[propertyName] == ^null)
+			begin
+				data msg, @string, String.Format("Invalid property name: {0}",propertyName)
+				if (ThrowOnInvalidPropertyName) then
+					throw new Exception(msg)
+				else
+					Debug.Fail(msg)
+			end
+		endmethod
+		
+		;;; <summary>
+		;;; Returns whether an exception is thrown, or if a Debug.Fail() is used
+		;;; when an invalid property name is passed to the VerifyPropertyName method.
+		;;; The default value is false, but subclasses used by unit tests might 
+		;;; override this property's getter to return true.
+		;;; </summary>
+		protected property ThrowOnInvalidPropertyName, boolean
+			method get
+			proc
+				mreturn mThrowOnInvalidPropertyName
+			endmethod
+			method set
+			proc
+				mThrowOnInvalidPropertyName = value
+			endmethod
+		endproperty
+		
+		private mThrowOnInvalidPropertyName, boolean
+		
+		.endregion
+		
+	endclass
+
+endnamespace
+

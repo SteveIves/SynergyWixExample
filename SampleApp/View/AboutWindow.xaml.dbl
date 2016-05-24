@@ -1,0 +1,31 @@
+﻿import System
+import System.Collections.Generic
+import System.Linq
+import System.Text
+import System.Windows
+import System.Windows.Controls
+import System.Windows.Data
+import System.Windows.Documents
+import System.Windows.Input
+import System.Windows.Media
+import System.Windows.Media.Imaging
+import System.Windows.Shapes
+import SampleApp.ViewModel
+
+namespace SampleApp.View
+
+    ;;; <summary>
+    ;;; Interaction logic for AboutWindow.xaml
+    ;;; </summary>
+    public partial class AboutWindow extends Window
+    
+	    public method AboutWindow
+        endparams
+        proc
+			this.InitializeComponent()
+			this.DataContext = new AboutWindowViewModel(this)
+        endmethod
+ 
+    endclass
+
+endnamespace

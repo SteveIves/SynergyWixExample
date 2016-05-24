@@ -1,0 +1,124 @@
+
+import System
+import System.Collections.Generic
+import System.Diagnostics
+import System.IO
+import System.Reflection
+import System.Text
+import SharedTools
+import System.Windows
+import System.Windows.Input
+import SampleApp.View
+
+namespace SampleApp.ViewModel
+	
+	public class MainWindowViewModel extends ViewModelBase
+		
+.region "Constructors"
+		
+		public method MainWindowViewModel
+			endparams
+		proc
+			;;Wire up the commands
+			ExitCommand = new RelayCommand(lambda (param) { Application.Current.Shutdown() })
+			CutCommand = new RelayCommand(lambda (param) { MessageBox.Show("Cut") })
+			CopyCommand = new RelayCommand(lambda (param) { MessageBox.Show("Copy") })
+			PasteCommand = new RelayCommand(lambda (param) { MessageBox.Show("Paste") })
+			ShowEnvVarCommand = new RelayCommand(doShowEnvVarCommand)
+			HelpCommand = new RelayCommand(doHelpCommand)
+			AboutCommand = new RelayCommand(lambda (param) { new AboutWindow().ShowDialog() })
+		endmethod
+		
+.endregion
+		
+.region "Command handlers"
+
+		private method doShowEnvVarCommand, void
+			param, @object
+			endparams
+		proc
+			if (param!=^null) then
+			begin
+				data envvar = (string)param
+				data envval = Environment.GetEnvironmentVariable(envvar)
+				if (String.IsNullOrWhiteSpace(envval)) then
+					MessageBox.Show(String.Format("Environment variable {0} is not set!",envvar),"Information",MessageBoxButton.OK,MessageBoxImage.Information)
+				else
+					MessageBox.Show(String.Format("The value of {0} is {1}",envvar,envval),"Information",MessageBoxButton.OK,MessageBoxImage.Information)
+			end
+			else
+			begin
+				MessageBox.Show("Invalid use of ShowEnvVarCommand. You must use CommandParameter","Error",MessageBoxButton.OK,MessageBoxImage.Exclamation)
+			end
+		endmethod
+		
+		private method doHelpCommand, void
+			param, @object
+		proc
+			data codebase = new UriBuilder(Assembly.GetExecutingAssembly().CodeBase)
+			data folder = Path.GetDirectoryName(Uri.UnescapeDataString(codebase.Path))
+			data helpFile = Path.Combine(folder,"SampleApp.chm")
+			if (File.Exists(helpFile)) then
+				Process.Start(helpFile)
+			else
+				MessageBox.Show("The Help file was not found. The most likely reason is the documentation not being selected during the installation.","Error",MessageBoxButton.OK,MessageBoxImage.Exclamation)
+		endmethod
+		
+.endregion
+		
+.region "Commands"
+		
+		public property ExitCommand, @ICommand
+			method get
+			endmethod
+			private method Set
+			endmethod
+		endproperty
+		
+		public property CutCommand, @ICommand
+			method get
+			endmethod
+			private method Set
+			endmethod
+		endproperty
+		
+		public property CopyCommand, @ICommand
+			method get
+			endmethod
+			private method Set
+			endmethod
+		endproperty
+		
+		public property PasteCommand, @ICommand
+			method get
+			endmethod
+			private method Set
+			endmethod
+		endproperty
+		
+		public property ShowEnvVarCommand, @ICommand
+			method get
+			endmethod
+			private method Set
+			endmethod
+		endproperty
+		
+		public property HelpCommand, @ICommand
+			method get
+			endmethod
+			private method Set
+			endmethod
+		endproperty
+		
+		public property AboutCommand, @ICommand
+			method get
+			endmethod
+			private method Set
+			endmethod
+		endproperty
+		
+.endregion
+
+	endclass
+	
+endnamespace

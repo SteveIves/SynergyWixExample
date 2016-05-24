@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+
+  <Product Id="{56E041BC-1699-4354-91AE-29A61BB3D4AE}" Name="Sample Application" Language="1033" Version="1.1.0.0" Manufacturer="Synergex" UpgradeCode="{56E041BC-1699-4354-91AE-29A61BB3D4AE}">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Feature Id="ProductFeature" Title="Sample Application" Description="Installs the sample application." Level="1" Absent="disallow">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentGroupRef Id="RegistryEntries" />
+    </Feature>
+
+    <Feature Id="DocumentationFeature" Title="Documentation" Level="1" Description="Installs the optional documentation.">
+      <ComponentGroupRef Id="DocumentationComponents" />
+    </Feature>
+
+    <!-- Select the UI for the installer -->
+    <UIRef Id="CustomUI"/>
+
+    <!-- Set the license text to be displayed before installation -->
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.SampleApp.ProjectDir)license.rtf" />
+
+    <!-- Set the icon to be used in "Programs and Features" -->
+    <Icon Id="AppIcon" SourceFile="$(var.SampleApp.ProjectDir)app.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="AppIcon" />
+
+    <!--These properties are used to access the values of the windows installer variables
+    USERNAME and COMPANYNAME. These variables are where our custom UI stored the values
+    that were entered by the user. Declaring these properties makes the values available
+    in this code.-->
+    <Property Id="USERNAME"    Secure="yes" />
+    <Property Id="COMPANYNAME" Secure="yes" />
+
+    <!-- Get a handle to the public documents folder so we can put templates there -->
+    <PropertyRef Id="WIX_DIR_COMMON_DOCUMENTS"/>
+
+    <!-- Define when the custom actions will be called -->
+    <InstallExecuteSequence>
+      <!--Called during installation-->
+      <Custom Action="EditSynergyIniAction" After="InstallFinalize">NOT REMOVE="ALL"</Custom>
+      <Custom Action="CreateIsamFilesAction"  After="InstallFinalize">NOT REMOVE="ALL"</Custom>
+      <!--Called during uninstall-->
+      <Custom Action="DeleteIsamFilesAction"  Before="InstallFinalize">REMOVE="ALL"</Custom>
+    </InstallExecuteSequence>
+
+    <!-- Check that .NET Framework 4.5.2 or higher is installed -->
+    <PropertyRef Id="NETFRAMEWORK45"/>
+    <Condition Message="[ProductName] requires that the .NET Framework 4.5.2 or higher is installed. Please install the .NET Framework and restart the installation.">
+      <![CDATA[Installed OR NETFRAMEWORK45 >= "#379893"]]>
+    </Condition>
+
+    <!-- Check that Synergy is installed -->
+    <Property Id="SDEINSTALLED">
+      <RegistrySearch Id="SdeInstalledValue" Root="HKLM" Key="SOFTWARE\Synergex\Install" Name="SDELOC" Type="raw" />
+    </Property>
+    <Condition Message="[ProductName] requires that Synergy is installed. Please install Synergy and restart the installation.">
+      <![CDATA[Installed OR SDEINSTALLED]]>
+    </Condition>
+
+    <!-- Provide information links to be displayed in "Programs and Features" -->
+    <Property Id="ARPURLINFOABOUT"  Value="http://www.somecompany.com/SampleApp" />
+    <Property Id="ARPHELPLINK"      Value="http://www.somecompany.com/SampleApp/help" />
+    <Property Id="ARPURLUPDATEINFO" Value="http://www.somecompany.com/SampleApp/downloads" />
+
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="MANUFACTURERFOLDER" Name="!(bind.property.Manufacturer)">
+          <Directory Id="INSTALLFOLDER" Name="!(bind.property.ProductName)" />
+        </Directory>
+      </Directory>
+      <!-- Start Menu Folder -->
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="!(bind.property.ProductName)"/>
+      </Directory>
+      <!-- Data Folder below Public Documents -->
+      <Directory Id="WIX_DIR_COMMON_DOCUMENTS">
+        <Directory Id="DataFolder" Name="!(bind.property.ProductName)"/>
+      </Directory>
+    </Directory>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponents">
+      <!-- Install the main executable -->
+      <Component Id="File_$(var.SampleApp.TargetFileName)" Guid="{D0E3C5CE-5ADE-4D8B-8734-67017A5F83A6}" Directory="INSTALLFOLDER">
+        <File Id="$(var.SampleApp.TargetFileName)" KeyPath="yes" Source="$(var.SampleApp.TargetPath)" Checksum="yes">
+          <netfx:NativeImage Id="$(var.SampleApp.TargetFileName)" Platform="32bit" Priority="0" AppBaseDirectory="INSTALLFOLDER"/>
+        </File>
+      </Component>
+      <!-- Install the shared class library -->
+      <Component Id="File_$(var.SharedTools.TargetFileName)" Guid="{C3CE87B0-A5D8-48D8-B44F-32638966ADB1}" Directory="INSTALLFOLDER">
+        <File Id="$(var.SharedTools.TargetFileName)" Source="$(var.SharedTools.TargetPath)" Checksum="yes">
+          <netfx:NativeImage Id="$(var.SharedTools.TargetFileName)" Platform="32bit" Priority="0" AppBaseDirectory="INSTALLFOLDER"/>
+        </File>
+      </Component>
+      <!-- Provide application and uninstall shortcuts in the start menu-->
+      <Component Id="ApplicationShortcuts" Guid="{5BBC576E-B697-40B9-93C0-63F1126649A2}" Directory="ApplicationProgramsFolder">
+        <Shortcut Id="ApplicationShortcut" Name="!(bind.property.ProductName)" Description="Starts !(bind.property.ProductName)" Target="[#$(var.SampleApp.TargetFileName)]" WorkingDirectory="MAINFOLDER"/>
+        <Shortcut Id="UninstallShortcut" Name="Uninstall !(bind.property.ProductName)" Description="Uninstalls !(bind.property.ProductName)" Target="[System64Folder]msiexec.exe" Arguments="/x [ProductCode]"/>
+        <RegistryValue Root="HKCU" Key="Software\!(bind.property.Manufacturer)\!(bind.property.ProductName)" Name="ApplicationShortcutsInstalled" Type="integer" Value="1" KeyPath="yes"/>
+        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+      </Component>
+      <!-- Provide a synergy.ini file -->
+      <Component Id="SynergyIniComponent" Guid="{5F66F494-0AB2-49A9-A7D1-DB63252F6C79}" Directory="DataFolder">
+        <File Id="SynergyIniFile" Source="synergy.ini" />
+        <Environment Id="EnvVar_SFWINIPATH" Action="create" Name="SFWINIPATH" Value="[DataFolder]" System="yes" Permanent="no" />
+      </Component>
+
+    </ComponentGroup>
+  </Fragment>
+</Wix>

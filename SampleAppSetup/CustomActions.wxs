@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+    <!-- Declare the custom actions DLL -->
+    <Binary Id="CustomActions" SourceFile="$(var.SetupCustomActions.TargetDir)\SetupCustomActions.CA.dll" />
+    <!-- Declare the custom actions that we will call -->
+    <CustomAction Id="EditSynergyIniAction" Return="check" Execute="immediate" BinaryKey="CustomActions" DllEntry="EditSynergyIni" />
+    <CustomAction Id="CreateIsamFilesAction" Return="check" Execute="immediate" BinaryKey="CustomActions" DllEntry="CreateIsamFiles" />
+    <CustomAction Id="DeleteIsamFilesAction" Return="check" Execute="immediate" BinaryKey="CustomActions" DllEntry="DeleteIsamFiles" />
+  </Fragment>
+</Wix>

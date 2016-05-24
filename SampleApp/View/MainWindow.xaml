@@ -1,0 +1,43 @@
+﻿<Window x:Class="SampleApp.View.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="clr-namespace:SampleApp.ViewModel"
+    Title="Sample Application" Height="500" Width="800" WindowStartupLocation="CenterScreen">
+
+    <Window.DataContext>
+        <vm:MainWindowViewModel />
+    </Window.DataContext>
+    
+    <Grid>
+        <Menu IsMainMenu="True">
+            <MenuItem Header="_File">
+                <MenuItem Header="E_xit" Command="{Binding ExitCommand}" />
+            </MenuItem>
+            <MenuItem Header="_Edit">
+                <MenuItem Header="_Cut" Command="{Binding CutCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="../Images/cut.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="_Copy" Command="{Binding CopyCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="../Images/copy.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="_Paste" Command="{Binding PasteCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="../Images/paste.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="_Tools">
+                <MenuItem Header="Show value of _DAT:" Command="{Binding ShowEnvVarCommand}" CommandParameter="DAT" />
+                <MenuItem Header="Show value of _EXE:" Command="{Binding ShowEnvVarCommand}" CommandParameter="EXE" />
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_Contents" Command="{Binding HelpCommand}" />
+                <MenuItem Header="_About" Command="{Binding AboutCommand}" />
+            </MenuItem>
+        </Menu>
+    </Grid>
+</Window>

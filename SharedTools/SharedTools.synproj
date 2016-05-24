@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Name>"SharedTools"</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8f1c4741-f43c-4621-9c83-17cf55319960}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SharedTools</RootNamespace>
+    <AssemblyName>SharedTools</AssemblyName>
+    <MainFile>Class.dbl</MainFile>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetPlatform>v452</TargetPlatform>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <DBL_qWarnLevel>3 - Don't display warning levels higher than 3</DBL_qWarnLevel>
+    <DBL_qWarn>True</DBL_qWarn>
+    <DBLCmdOptions> -W3 -qstack</DBLCmdOptions>
+    <Language>Synergy</Language>
+    <DBL_unQulRecStm>Stack</DBL_unQulRecStm>
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <IncludeDebugInformation>true</IncludeDebugInformation>
+    <OutputPath>bin\Debug\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+    <DebugOptimize>Debug</DebugOptimize>
+    <DocumentationFile>
+    </DocumentationFile>
+    <Prefer32Bit Condition=" '$(TargetFrameworkVersion)'  != 'v4.0' AND '$(Prefer32Bit)' != 'false' ">true</Prefer32Bit>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <SerializeAssembly>Auto</SerializeAssembly>
+    <LanguageCompatibilityLevel>100301</LanguageCompatibilityLevel>
+    <TargetRuntimeLevel>100301</TargetRuntimeLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <IncludeDebugInformation>true</IncludeDebugInformation>
+    <OutputPath>bin\Release\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+    <DebugOptimize>Optimize</DebugOptimize>
+    <DocumentationFile>
+    </DocumentationFile>
+    <Prefer32Bit Condition=" '$(TargetFrameworkVersion)'  != 'v4.0' AND '$(Prefer32Bit)' != 'false' ">true</Prefer32Bit>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <SerializeAssembly>Auto</SerializeAssembly>
+    <LanguageCompatibilityLevel>100301</LanguageCompatibilityLevel>
+    <TargetRuntimeLevel>100301</TargetRuntimeLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="synrnt">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.dbl" />
+    <Compile Include="RelayCommand.dbl" />
+    <Compile Include="ViewModelBase.dbl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Synergex\VS2010\Synergex.SynergyDE.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

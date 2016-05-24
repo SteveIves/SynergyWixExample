@@ -1,0 +1,27 @@
+﻿<Window x:Class="SampleApp.View.AboutWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="About Sample Application" Height="250" Width="400" WindowStyle="ToolWindow">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="1" HorizontalAlignment="Center" FontSize="14" FontWeight="ExtraBold" Text="Registered User" />
+        <TextBlock Grid.Row="2" HorizontalAlignment="Center" FontSize="18" Text="{Binding Name}" />
+
+        <TextBlock Grid.Row="4" HorizontalAlignment="Center" FontSize="14" FontWeight="ExtraBold" Text="Company Name" />
+        <TextBlock Grid.Row="5" HorizontalAlignment="Center" FontSize="18" Text="{Binding Company}" />
+
+        <Button Grid.Row="7" Content="_Close" Width="80" Command="{Binding CloseCommand}" />
+
+    </Grid>
+</Window>

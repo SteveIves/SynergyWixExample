@@ -1,0 +1,96 @@
+import Microsoft.Win32
+import System
+import System.Collections.Generic
+import System.Text
+import System.Windows
+import System.Windows.Input
+import SampleApp.View
+import SharedTools
+
+namespace SampleApp.ViewModel
+	
+	public class AboutWindowViewModel extends ViewModelBase
+		
+.region "Constructors"
+		
+		private mView, @AboutWindow
+
+		public method AboutWindowViewModel
+			required in aView, @AboutWindow
+			endparams
+		proc
+			;;Save the reference to the view
+			mView = aView
+
+			;;Center the dialog on the owner
+			data owner = Application.Current.MainWindow
+			mView.Left = owner.Left + (owner.Width/2) - (mView.Width / 2)
+			mView.Top = owner.Top  + (owner.Height/2) - (mView.Height / 2)
+
+			;;Wire up the ICommands
+			CloseCommand = new RelayCommand(doCloseCommand)
+		endmethod
+		
+.endregion
+
+.region "Bindable data properties"
+
+		public property Name, string
+			method get
+			proc
+				;;Look in the registry for the value recorded by the installation
+				data name = (String)Registry.GetValue("HKEY_LOCAL_MACHINE\SOFTWARE\Synergex\Sample Application","Name","")
+				;;If we didn't find it and we're a 64-bit process, try looking in the 32-bit registry
+				if (String.IsNullOrWhiteSpace(name) && Environment.Is64BitProcess)
+					name = (String)Registry.GetValue("HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Synergex\Sample Application","Name","")
+				;;If we still didn't find it then report that fact
+				if (String.IsNullOrWhiteSpace(name))
+					name = "Users name not found in registry!"
+				;;Return the result
+				mreturn name
+			endmethod
+		endproperty
+		
+		public property Company, string
+			method get
+			proc
+				;;Look in the registry for the value recorded by the installation
+				data company = (String)Registry.GetValue("HKEY_LOCAL_MACHINE\SOFTWARE\Synergex\Sample Application","Company","")
+				;;If we didn't find it and we're a 64-bit process, try looking in the 32-bit registry
+				if (String.IsNullOrWhiteSpace(company) && Environment.Is64BitProcess)
+					company = (String)Registry.GetValue("HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Synergex\Sample Application","Company","")
+				;;If we still didn't find it then report that fact
+				if (String.IsNullOrWhiteSpace(company))
+					company = "Users company not found in registry!"
+				;;Return the result
+				mreturn company
+			endmethod
+		endproperty
+		
+.endregion
+
+.region "ICommand properties"
+		
+		public property CloseCommand, @ICommand
+			method get
+			endmethod
+			private method Set
+			endmethod
+		endproperty
+		
+.endregion
+		
+.region "ICommand processing methods"
+		
+		private method doCloseCommand, void
+			required in param, @object
+			endparams
+		proc
+			mView.Close()
+		endmethod
+		
+.endregion
+		
+	endclass
+	
+endnamespace

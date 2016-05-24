@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+    <ComponentGroup Id="DocumentationComponents">
+      <!-- Install the help file -->
+      <Component Id="HelpFileComponent" Guid="{FF6C2110-EFDC-4981-B487-EB2FD5678578}" Directory="INSTALLFOLDER">
+        <File Id="HelpFile" Source="$(var.SampleApp.TargetDir)SampleApp.chm" Checksum="yes" />
+      </Component>
+      <!-- Provide a start menu shortcut to the documentation -->
+      <Component Id="DocumentationShortcuts" Guid="{A6EBC614-53CE-4B72-B962-4B540C964935}" Directory="ApplicationProgramsFolder">
+        <Shortcut Id="HelpFileShortcut" Name="!(bind.property.ProductName) Documentation" Description="Displays the !(bind.property.ProductName) documentation" Target="[#HelpFile]" WorkingDirectory="MAINFOLDER"/>
+        <RegistryValue Root="HKCU" Key="Software\!(bind.property.Manufacturer)\!(bind.property.ProductName)" Name="DocumentationShortcutInstalled" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+
+    </ComponentGroup>
+  </Fragment>
+</Wix>

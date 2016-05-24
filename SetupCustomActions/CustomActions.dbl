@@ -1,0 +1,83 @@
+import System
+import System.Collections.Generic
+import System.Text
+import Microsoft.Deployment.WindowsInstaller
+import System.IO
+
+namespace SetupCustomActions
+	
+	public class CustomActions
+		
+		{CustomAction}
+		public static method EditSynergyIni, ActionResult
+			required in session, @Session 
+		proc
+			try
+			begin
+				data iniFile = Path.Combine(session["DataFolder"],"synergy.ini")
+				if (File.Exists(iniFile)) then
+				begin
+					data iniData = File.ReadAllText(iniFile)
+					iniData = iniData.Replace("***INSTALLFOLDER***", session["INSTALLFOLDER"])
+					iniData = iniData.Replace("***DATAFOLDER***", session["DataFolder"])
+					File.WriteAllText(iniFile,iniData)
+				end
+				else
+				begin
+					session.Log("ERROR in CreateSynergyIni: File not found!")
+					mreturn ActionResult.Failure
+				end
+			end
+			catch (ex, @Exception)
+			begin
+				session.Log("ERROR in CreateSynergyIni: {0}", ex.ToString())
+				mreturn ActionResult.Failure
+			end
+			endtry
+			mreturn ActionResult.Success
+		endmethod
+		
+		{CustomAction}
+		public static method CreateIsamFiles, ActionResult
+			required in session, @Session 
+		proc
+			try
+			begin
+				data isamFile = Path.Combine(session["DataFolder"],"myfile.ism")
+				if (!File.Exists(isamFile))
+					xcall isamc(isamFile,200,1,"start=1,length=10,name=code")	
+			end
+			catch (ex, @Exception)
+			begin
+				session.Log("ERROR in CreateIsamFiles: {0}", ex.ToString())
+				mreturn ActionResult.Failure
+			end
+			endtry
+			mreturn ActionResult.Success
+		endmethod
+		
+		{CustomAction}
+		public static method DeleteIsamFiles, ActionResult
+			required in session, @Session 
+		proc
+			try
+			begin
+				data isamFile = Path.Combine(session ["DataFolder"],"myfile.ism")
+				if (File.Exists(isamFile))
+					xcall delet(isamFile)
+			end
+			catch (ex, @Exception)
+			begin
+				session.Log("ERROR in DeleteIsamFiles: {0}", ex.ToString())
+				mreturn ActionResult.Failure
+			end
+			endtry
+			mreturn ActionResult.Success
+		endmethod
+		
+
+
+	endclass
+
+endnamespace
+
