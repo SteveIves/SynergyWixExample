@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
 
-  <Product Id="{56E041BC-1699-4354-91AE-29A61BB3D4AE}" Name="Sample Application" Language="1033" Version="1.1.0.0" Manufacturer="Synergex" UpgradeCode="{56E041BC-1699-4354-91AE-29A61BB3D4AE}">
+  <Product Id="PUT_UNIQUE_GUID_HERE" Name="Sample Application" Language="1033" Version="1.1.0.0" Manufacturer="Synergex" UpgradeCode="PUT_UNIQUE_GUID_HERE">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
@@ -88,26 +88,26 @@
   <Fragment>
     <ComponentGroup Id="ProductComponents">
       <!-- Install the main executable -->
-      <Component Id="File_$(var.SampleApp.TargetFileName)" Guid="{D0E3C5CE-5ADE-4D8B-8734-67017A5F83A6}" Directory="INSTALLFOLDER">
+      <Component Id="File_$(var.SampleApp.TargetFileName)" Guid="PUT_UNIQUE_GUID_HERE" Directory="INSTALLFOLDER">
         <File Id="$(var.SampleApp.TargetFileName)" KeyPath="yes" Source="$(var.SampleApp.TargetPath)" Checksum="yes">
           <netfx:NativeImage Id="$(var.SampleApp.TargetFileName)" Platform="32bit" Priority="0" AppBaseDirectory="INSTALLFOLDER"/>
         </File>
       </Component>
       <!-- Install the shared class library -->
-      <Component Id="File_$(var.SharedTools.TargetFileName)" Guid="{C3CE87B0-A5D8-48D8-B44F-32638966ADB1}" Directory="INSTALLFOLDER">
+      <Component Id="File_$(var.SharedTools.TargetFileName)" Guid="PUT_UNIQUE_GUID_HERE" Directory="INSTALLFOLDER">
         <File Id="$(var.SharedTools.TargetFileName)" Source="$(var.SharedTools.TargetPath)" Checksum="yes">
           <netfx:NativeImage Id="$(var.SharedTools.TargetFileName)" Platform="32bit" Priority="0" AppBaseDirectory="INSTALLFOLDER"/>
         </File>
       </Component>
       <!-- Provide application and uninstall shortcuts in the start menu-->
-      <Component Id="ApplicationShortcuts" Guid="{5BBC576E-B697-40B9-93C0-63F1126649A2}" Directory="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcuts" Guid="PUT_UNIQUE_GUID_HERE" Directory="ApplicationProgramsFolder">
         <Shortcut Id="ApplicationShortcut" Name="!(bind.property.ProductName)" Description="Starts !(bind.property.ProductName)" Target="[#$(var.SampleApp.TargetFileName)]" WorkingDirectory="MAINFOLDER"/>
         <Shortcut Id="UninstallShortcut" Name="Uninstall !(bind.property.ProductName)" Description="Uninstalls !(bind.property.ProductName)" Target="[System64Folder]msiexec.exe" Arguments="/x [ProductCode]"/>
         <RegistryValue Root="HKCU" Key="Software\!(bind.property.Manufacturer)\!(bind.property.ProductName)" Name="ApplicationShortcutsInstalled" Type="integer" Value="1" KeyPath="yes"/>
         <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
       </Component>
       <!-- Provide a synergy.ini file -->
-      <Component Id="SynergyIniComponent" Guid="{5F66F494-0AB2-49A9-A7D1-DB63252F6C79}" Directory="DataFolder">
+      <Component Id="SynergyIniComponent" Guid="PUT_UNIQUE_GUID_HERE" Directory="DataFolder">
         <File Id="SynergyIniFile" Source="synergy.ini" />
         <Environment Id="EnvVar_SFWINIPATH" Action="create" Name="SFWINIPATH" Value="[DataFolder]" System="yes" Permanent="no" />
       </Component>
